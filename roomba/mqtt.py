@@ -5,10 +5,10 @@ import create, sw_song
 
 # user parameters to configure before use
 
-MQTT_broker = "192.168.1.18"
+MQTT_broker = "YOUR_BROKER"
 MQTT_Port = 1883
-MQTT_User = "gladys_admin"
-MQTT_PW = "Pa!ate"
+MQTT_User = "YOUR_USERNAME"
+MQTT_PW = "YOUR_PASSWD"
 
 DD_pin = 8
 
