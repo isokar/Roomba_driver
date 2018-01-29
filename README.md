@@ -9,9 +9,14 @@ Need paho.mqtt.client library
 
 ### Software installation
 
-To install this module, simply launch the install.sh script.
+To install this module, first create a cronfile then simply launch the install.sh script.
 it will automaticaly download libraries and configure what's need to be done(crontab...).
 Don't forget to open and modify MQTT.py to adapt with your configuration(mostly for MQTT parameters).
+
+You might need to configure serial port:
+- go to rpi_config and enable serial
+- open /boot/cmdline.txt and remove "console=serial0,115200"
+
 The script will reboot your Pi at the end, It should be good.
 
 
@@ -23,12 +28,14 @@ To communicate with Roomba, you need to plug your Pi serial interface _**through
 
 4 signals are needed:
 
-|Pi       |    |  Roomba|
-|-------  |--- |--------|
-|TX  - 8  | -> |  3 - RX|
-|RX  - 10 | <- |  4 - TX|
-|DD  - 24 | -> | 5 - DD*|
-|GND - 6  | <> | 6 - GND|
+|Pi       |    |  Roomba| voltage reg|
+|-------  |--- |--------| -----------|
+|TX  - 8  | -> |  3 - RX|   |
+|RX  - 10 | <- |  4 - TX|   |
+|DD  - 18 | -> | 5 - DD*|   |
+|GND - 14 | <> | 6 - GND|   |
+|5V  - 2  | -> |   | VCC - 5V|
+|GND - 6  | <> |   | GND - 0V|
 
 **DD(Device Detect) can be plugged on any other GPIO, just modify it on MQTT.py file*
 
