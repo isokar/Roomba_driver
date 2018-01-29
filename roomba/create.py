@@ -139,7 +139,7 @@ TICK_PER_MM = TICK_PER_REVOLUTION/(math.pi*WHEEL_DIAMETER)
 ANGULAR_ERROR = 360.0/450.0
 
 # GPIO definition
-DEVICE_DETECT = 8
+DEVICE_DETECT = 18
 
 # for printing the SCI modes
 def modeStr( mode ):

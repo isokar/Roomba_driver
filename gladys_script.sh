@@ -1,2 +1,2 @@
 #!/bin/sh
-python /home/pi/roomba/mqtt.py
+python /home/pi/roomba_drive/roomba/mqtt.py

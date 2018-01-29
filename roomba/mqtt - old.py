@@ -16,8 +16,7 @@ DD_pin = 18
 #  end of user parameters
 
 
-delay = 1
-des_delay = 10
+delay = 1800
 bat_stop = 5
 bat_base = 15
 status = 0
@@ -26,28 +25,13 @@ s = sched.scheduler(time.time, time.sleep)
 def print_status(C, s):
 	global status
 	global delay
-	senses = robot.sensors([create.BATTERY_CHARGE, create.BATTERY_CAPACITY,create.CURRENT])
+	senses = robot.sensors([create.BATTERY_CHARGE, create.BATTERY_CAPACITY])
 	bat_stat = (senses[create.BATTERY_CHARGE]*100)/senses[create.BATTERY_CAPACITY]
 	print ("battery:")
 	print bat_stat
-	robot.printSensors() # debug output
-	print ("delay:")
-	print delay
-	print ("for:")
-	print des_delay
-	
-	if senses[create.BATTERY_CAPACITY]>= -1000:
-		status=0
-	else:
-		status=1
-	
-	if delay >= des_delay:
-		pld = "{\"_type\":\"stat\",\"power\":\"%d\",\"batt\":\"%d\"}" % (status,bat_stat,)
-		C.publish("roomba/stat/", payload=pld, qos=0, retain=False)
-		delay = 1
-	else:
-		delay += 1
-		
+        robot.printSensors() # debug output
+	pld = "{\"_type\":\"stat\",\"power\":\"%d\",\"batt\":\"%d\"}" % (status,bat_stat,)
+	C.publish("roomba/stat/", payload=pld, qos=0, retain=False)
 	if status == 1:
 		if bat_stat < bat_stop:
 			robot.toPowerMode()
@@ -57,7 +41,7 @@ def print_status(C, s):
 				robot.toBaseMode()
 				status = 0
 
-	s.enter(30,1,print_status,(C,s,))
+	s.enter(delay,1,print_status,(C,s,))
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -71,7 +55,7 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
 	global status
-	global des_delay
+	global delay
 	print ("received message from broker" + msg.payload)
 	data = json.loads(msg.payload)
 	typ = data["_type"]
@@ -83,17 +67,15 @@ def on_message(client, userdata, msg):
                 if power == '1':
                 	robot.toCleanMode()
                 	status = 1
-                	des_delay = 10
+                	delay = 300
                 else:
                 	robot.toPowerMode()
 #			robot.toBaseMode()
                 	status = 0
-                	des_delay = 60
+                	delay = 1800
 	
 	if typ == 'ping':
-		robot.toSafeMode()
                 sw_song.play_starwars(robot)
-		robot.toSafeMode()
 	
 	print robot.getMode()
 
